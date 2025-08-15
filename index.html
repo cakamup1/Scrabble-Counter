@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrabble Counter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --text-color: #242426;
+            --button-color: #0C783A;
+            --background-color: #FFFFFF;
+            --stroke-color: #0C783A;
+        }
+        
+        body {
+            font-family: 'Poppins', Helvetica, Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .section {
+            background-color: var(--background-color);
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border: 1px solid var(--stroke-color);
+        }
+        
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 0;
+        }
+        
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--stroke-color);
+            padding-bottom: 8px;
+        }
+        
+        p {
+            font-size: 16px;
+            font-weight: 400;
+        }
+        
+        button {
+            background-color: var(--button-color);
+            border: none;
+            width: 300px;
+            height: 48px;
+            cursor: pointer;
+            margin: 8px;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            color: var(--background-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0;
+            font-size: 16px;
+            font-family: 'Poppins', Helvetica, Arial, sans-serif;
+        }
+        
+        button:hover {
+            background-color: #0a6332;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        button.primary {
+            background-color: var(--button-color);
+        }
+        
+        button.small {
+            width: auto;
+            height: auto;
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+        
+        button.transparent {
+            background-color: transparent;
+            color: var(--button-color);
+            border: 1px solid var(--stroke-color);
+        }
+        
+        button.transparent:hover {
+            background-color: rgba(12, 120, 58, 0.1);
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border: 1px solid var(--stroke-color);
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border-radius: 0;
+            font-family: 'Poppins', Helvetica, Arial, sans-serif;
+        }
+        
+        input[type="number"] {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        /* Убираем стрелки для ввода чисел */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        
+        .player-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+        }
+        
+        .player-input:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .player-input input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: var(--button-color);
+        }
+        
+        .player-input input[type="text"] {
+            margin: 0;
+        }
+        
+        .current-player {
+            background-color: var(--background-color);
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+            font-weight: bold;
+            color: var(--text-color);
+            border: 1px solid var(--stroke-color);
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .button-group button {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .points-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin: 24px 0;
+        }
+        
+        .points-grid input {
+            text-align: center;
+            font-size: 16px;
+            height: 50px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: 1px solid var(--stroke-color);
+            border-radius: 0;
+        }
+        
+        .move-history {
+            margin-top: 24px;
+        }
+        
+        .move-history h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            color: var(--text-color);
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            background-color: var(--background-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        th, td {
+            border: 1px solid var(--stroke-color);
+            padding: 14px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        
+        tr:hover {
+            background-color: #e8f5e9;
+        }
+        
+        .results-text {
+            white-space: pre-line;
+            font-family: 'Courier New', monospace;
+            background-color: var(--background-color);
+            padding: 16px;
+            border: 1px solid var(--stroke-color);
+            margin-bottom: 16px;
+            color: var(--text-color);
+        }
+        
+        .game-summary {
+            background-color: var(--background-color);
+            padding: 24px;
+            margin: 24px 0;
+            border: 1px solid var(--stroke-color);
+            text-align: center;
+        }
+        
+        .winner-result {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-color);
+            margin: 16px 0;
+        }
+        
+        .scores-result {
+            margin: 24px 0;
+            text-align: left;
+        }
+        
+        .score-item {
+            padding: 8px;
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        
+        .copy-button {
+            background-color: var(--button-color);
+            color: var(--background-color);
+            border: none;
+            width: 300px;
+            height: 48px;
+            cursor: pointer;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0;
+            font-size: 16px;
+            font-family: 'Poppins', Helvetica, Arial, sans-serif;
+            margin: 8px;
+        }
+        
+        .copy-button:hover {
+            background-color: #0a6332;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result-content {
+            background-color: var(--background-color);
+            padding: 24px;
+            margin: 24px 0;
+            border: 1px solid var(--stroke-color);
+            text-align: left;
+            color: var(--text-color);
+            white-space: pre-wrap;
+            font-family: 'Poppins', Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .highlight {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+        
+        .start-button-container {
+            text-align: center;
+            margin-top: 32px;
+        }
+        
+        .players-container {
+            margin: 24px 0;
+        }
+        
+        #result-text {
+            font-family: 'Poppins', Helvetica, Arial, sans-serif;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .add-50-container {
+            text-align: center;
+            margin: 16px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="section" id="start-section">
+        <h1>Scrabble Counter</h1>
+        <div class="start-button-container">
+            <button class="primary" onclick="startGame()">Начать игру</button>
+        </div>
+    </div>
+
+    <div class="section hidden" id="players-section">
+        <h2>Начало игры</h2>
+        <p style="text-align: center;">Введите имена игроков и выберите, кто ходит первым</p>
+        
+        <div class="players-container" id="players-container">
+            <div class="player-input">
+                <input type="radio" name="first-player" id="player1" checked>
+                <input type="text" placeholder="Игрок 1" value="Игрок 1">
+            </div>
+            <div class="player-input">
+                <input type="radio" name="first-player" id="player2">
+                <input type="text" placeholder="Игрок 2" value="Игрок 2">
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 24px;">
+            <button class="primary" onclick="startGameplay()">Начать игру</button>
+        </div>
+    </div>
+
+    <div class="section hidden" id="gameplay-section">
+        <h2>Ход игры</h2>
+        <div class="current-player" id="current-player">Текущий игрок: <span id="current-player-name">-</span></div>
+        
+        <div class="points-grid" id="points-grid">
+            <!-- 7 ячеек для ввода очков будут добавлены динамически -->
+        </div>
+        
+        <div class="add-50-container">
+            <button class="transparent" onclick="add50Points()">+ 50 очков</button>
+        </div>
+        
+        <div class="button-group">
+            <button class="primary" onclick="endTurn()">Конец хода</button>
+            <button onclick="skipTurn()">Пропустить</button>
+            <button onclick="endGame()">Закончить игру</button>
+        </div>
+        
+        <div class="move-history">
+            <h3>История ходов</h3>
+            <table id="moves-table">
+                <thead>
+                    <tr>
+                        <th>Ход</th>
+                        <th>Игрок</th>
+                        <th>Введенные очки</th>
+                        <th>Сумма</th>
+                    </tr>
+                </thead>
+                <tbody id="moves-table-body">
+                    <!-- Ходы будут добавлены динамически -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section hidden" id="results-section">
+        <h2>Результаты игры</h2>
+        
+        <div class="result-content">
+            <div id="result-text"></div>
+        </div>
+        
+        <div style="text-align: center; margin: 24px 0;">
+            <button class="copy-button" onclick="copyGameResult()">Копировать результат</button>
+            <button onclick="newGame()">Новая игру</button>
+        </div>
+        
+        <h3>Подробная таблица результатов</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ход</th>
+                    <th>Игрок</th>
+                    <th>Введенные очки</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody id="final-results-table">
+                <!-- Финальные результаты будут добавлены динамически -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let players = [];
+        let currentPlayerIndex = 0;
+        let gameStarted = false;
+        let moveHistory = [];
+        let moveNumber = 1;
+
+        // Инициализация игры
+        function startGame() {
+            document.getElementById('start-section').classList.add('hidden');
+            document.getElementById('players-section').classList.remove('hidden');
+        }
+
+        // Начало игры
+        function startGameplay() {
+            const playerInputs = document.querySelectorAll('#players-container input[type="text"]');
+            const radioButtons = document.querySelectorAll('input[name="first-player"]');
+            
+            players = [];
+            for (let i = 0; i < playerInputs.length; i++) {
+                const name = playerInputs[i].value.trim() || `Игрок ${i + 1}`;
+                players.push({
+                    name: name,
+                    points: 0
+                });
+                
+                // Проверяем, кто первый игрок
+                if (radioButtons[i] && radioButtons[i].checked) {
+                    currentPlayerIndex = i;
+                }
+            }
+            
+            gameStarted = true;
+            moveNumber = 1;
+            moveHistory = [];
+            document.getElementById('players-section').classList.add('hidden');
+            document.getElementById('gameplay-section').classList.remove('hidden');
+            
+            // Создаем 7 ячеек для ввода очков
+            createPointsGrid();
+            
+            updateGameDisplay();
+            updateMovesTable();
+        }
+
+        // Создание сетки для ввода очков
+        function createPointsGrid() {
+            const grid = document.getElementById('points-grid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 7; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.placeholder = '';
+                input.min = '0';
+                input.addEventListener('input', function() {
+                    // Разрешаем только цифры
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+                grid.appendChild(input);
+            }
+        }
+
+        // Обновление отображения игры
+        function updateGameDisplay() {
+            document.getElementById('current-player-name').textContent = players[currentPlayerIndex].name;
+            
+            // Очищаем поля ввода очков
+            const inputs = document.querySelectorAll('#points-grid input');
+            inputs.forEach(input => {
+                input.value = '';
+            });
+        }
+
+        // Добавить 50 очков
+        function add50Points() {
+            const inputs = document.querySelectorAll('#points-grid input');
+            let added = false;
+            
+            for (let i = 0; i < inputs.length; i++) {
+                if (inputs[i].value === '') {
+                    inputs[i].value = '50';
+                    added = true;
+                    break;
+                }
+            }
+            
+            if (!added) {
+                // Если все ячейки заполнены, добавляем в первую пустую или заменяем первую
+                for (let i = 0; i < inputs.length; i++) {
+                    if (inputs[i].value === '') {
+                        inputs[i].value = '50';
+                        added = true;
+                        break;
+                    }
+                }
+                if (!added) {
+                    inputs[0].value = '50';
+                }
+            }
+        }
+
+        // Обновление таблицы ходов
+        function updateMovesTable() {
+            const tbody = document.getElementById('moves-table-body');
+            tbody.innerHTML = '';
+            
+            moveHistory.forEach(move => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${move.moveNumber}</td>
+                    <td>${move.player}</td>
+                    <td>${move.enteredPoints.join(', ')}</td>
+                    <td>${move.points}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Конец хода
+        function endTurn() {
+            const inputs = document.querySelectorAll('#points-grid input');
+            let totalPoints = 0;
+            const enteredPoints = [];
+            
+            inputs.forEach(input => {
+                const value = parseInt(input.value) || 0;
+                if (input.value.trim() !== '') {
+                    enteredPoints.push(input.value.trim());
+                }
+                totalPoints += value;
+            });
+            
+            // Добавляем очки текущему игроку
+            players[currentPlayerIndex].points += totalPoints;
+            
+            // Сохраняем ход в истории
+            moveHistory.push({
+                moveNumber: moveNumber,
+                player: players[currentPlayerIndex].name,
+                enteredPoints: enteredPoints,
+                points: totalPoints
+            });
+            
+            moveNumber++;
+            
+            // Переходим к следующему игроку
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+            
+            updateGameDisplay();
+            updateMovesTable();
+        }
+
+        // Пропустить ход
+        function skipTurn() {
+            // Сохраняем ход в истории (0 очков)
+            moveHistory.push({
+                moveNumber: moveNumber,
+                player: players[currentPlayerIndex].name,
+                enteredPoints: [],
+                points: 0
+            });
+            
+            moveNumber++;
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+            updateGameDisplay();
+            updateMovesTable();
+        }
+
+        // Закончить игру
+        function endGame() {
+            // Добавляем текущий ход в историю (если есть введенные очки)
+            const inputs = document.querySelectorAll('#points-grid input');
+            let totalPoints = 0;
+            const enteredPoints = [];
+            let hasPoints = false;
+            
+            inputs.forEach(input => {
+                const value = parseInt(input.value) || 0;
+                if (input.value.trim() !== '') {
+                    enteredPoints.push(input.value.trim());
+                    hasPoints = true;
+                }
+                totalPoints += value;
+            });
+            
+            if (hasPoints) {
+                players[currentPlayerIndex].points += totalPoints;
+                moveHistory.push({
+                    moveNumber: moveNumber,
+                    player: players[currentPlayerIndex].name,
+                    enteredPoints: enteredPoints,
+                    points: totalPoints
+                });
+            }
+            
+            // Сортируем игроков по убыванию очков
+            const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+            
+            // Получаем текущую дату
+            const now = new Date();
+            const dateString = now.toLocaleDateString('ru-RU');
+            const timeString = now.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'});
+            
+            // Создаем текст результата
+            let resultText = `🎮 РЕЗУЛЬТАТ ИГРЫ SCRABBLE\n`;
+            resultText += `📅 Дата: ${dateString} в ${timeString}\n\n`;
+            resultText += `🏆 ПОБЕДИТЕЛЬ: ${sortedPlayers[0].name}\n\n`;
+            resultText += `📊 Общий счет:\n`;
+            sortedPlayers.forEach((player, index) => {
+                const place = index + 1;
+                const placeEmoji = place === 1 ? '🥇' : place === 2 ? '🥈' : `${place}.`;
+                resultText += `${placeEmoji} ${player.name}: ${player.points} очков\n`;
+            });
+            
+            resultText += `\n📈 Детализация ходов:\n`;
+            moveHistory.forEach(move => {
+                const pointsText = move.enteredPoints.length > 0 ? 
+                    `(${move.enteredPoints.join(', ')}) = ${move.points}` : 
+                    `${move.points}`;
+                resultText += `Ход ${move.moveNumber}: ${move.player} - ${pointsText} очков\n`;
+            });
+            
+            // Отображаем результат
+            document.getElementById('result-text').textContent = resultText;
+            
+            // Заполняем финальную таблицу
+            const finalTable = document.getElementById('final-results-table');
+            finalTable.innerHTML = '';
+            
+            moveHistory.forEach(move => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${move.moveNumber}</td>
+                    <td>${move.player}</td>
+                    <td>${move.enteredPoints.join(', ')}</td>
+                    <td>${move.points}</td>
+                `;
+                finalTable.appendChild(row);
+            });
+            
+            document.getElementById('gameplay-section').classList.add('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
+        }
+
+        // Копировать результат игры
+        function copyGameResult() {
+            const resultText = document.getElementById('result-text').textContent;
+            
+            navigator.clipboard.writeText(resultText).then(() => {
+                // Показываем уведомление
+                const originalText = document.querySelector('.copy-button').textContent;
+                document.querySelector('.copy-button').textContent = 'Скопировано!';
+                setTimeout(() => {
+                    document.querySelector('.copy-button').textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Ошибка копирования: ', err);
+                // Альтернативный метод копирования
+                try {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = resultText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    // Показываем уведомление
+                    const originalText = document.querySelector('.copy-button').textContent;
+                    document.querySelector('.copy-button').textContent = 'Скопировано!';
+                    setTimeout(() => {
+                        document.querySelector('.copy-button').textContent = originalText;
+                    }, 2000);
+                } catch (e) {
+                    alert('Не удалось скопировать результат игры. Пожалуйста, попробуйте еще раз.');
+                }
+            });
+        }
+
+        // Новая игра
+        function newGame() {
+            if (confirm('Начать новую игру? Все текущие данные будут потеряны.')) {
+                players = [];
+                currentPlayerIndex = 0;
+                gameStarted = false;
+                moveHistory = [];
+                moveNumber = 1;
+                
+                document.getElementById('results-section').classList.add('hidden');
+                document.getElementById('start-section').classList.remove('hidden');
+            }
+        }
+
+        // Обработка нажатия Enter в полях ввода очков
+        document.addEventListener('DOMContentLoaded', function() {
+            const pointsGrid = document.getElementById('points-grid');
+            if (pointsGrid) {
+                pointsGrid.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        endTurn();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
