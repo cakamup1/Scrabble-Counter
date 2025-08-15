@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Scrabble Counter</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -13,27 +13,32 @@
             --stroke-color: #0C783A;
         }
         
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
             font-family: 'Poppins', Helvetica, Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
+            padding: 16px;
+            max-width: 100%;
+            overflow-x: hidden;
         }
         
         .section {
             background-color: var(--background-color);
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            padding: 24px 16px;
+            margin-bottom: 16px;
             border: 1px solid var(--stroke-color);
         }
         
         h1, h2 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             color: var(--text-color);
             font-weight: 600;
         }
@@ -45,7 +50,7 @@
         }
         
         h2 {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
             border-bottom: 2px solid var(--stroke-color);
             padding-bottom: 8px;
@@ -54,15 +59,17 @@
         p {
             font-size: 16px;
             font-weight: 400;
+            text-align: center;
+            margin-bottom: 16px;
         }
         
         button {
             background-color: var(--button-color);
             border: none;
-            width: 300px;
+            width: 100%;
             height: 48px;
             cursor: pointer;
-            margin: 8px;
+            margin: 8px 0;
             font-weight: 400;
             transition: all 0.3s ease;
             color: var(--background-color);
@@ -70,6 +77,7 @@
             border-radius: 0;
             font-size: 16px;
             font-family: 'Poppins', Helvetica, Arial, sans-serif;
+            display: block;
         }
         
         button:hover {
@@ -85,8 +93,9 @@
         button.small {
             width: auto;
             height: auto;
-            padding: 10px 16px;
+            padding: 12px 16px;
             font-size: 14px;
+            display: inline-block;
         }
         
         button.transparent {
@@ -110,10 +119,10 @@
             color: var(--text-color);
             border-radius: 0;
             font-family: 'Poppins', Helvetica, Arial, sans-serif;
+            text-align: center;
         }
         
         input[type="number"] {
-            text-align: center;
             font-size: 18px;
             font-weight: bold;
         }
@@ -158,19 +167,23 @@
             font-weight: bold;
             color: var(--text-color);
             border: 1px solid var(--stroke-color);
+            font-size: 18px;
         }
         
         .button-group {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-direction: column;
             gap: 16px;
             margin-top: 16px;
         }
         
-        .button-group button {
+        .button-group-row {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .button-group-row button {
             flex: 1;
-            min-width: 120px;
         }
         
         .hidden {
@@ -211,12 +224,12 @@
             border-collapse: collapse;
             margin-top: 24px;
             background-color: var(--background-color);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
         }
         
         th, td {
             border: 1px solid var(--stroke-color);
-            padding: 14px;
+            padding: 10px 6px;
             text-align: left;
         }
         
@@ -225,6 +238,7 @@
             color: var(--text-color);
             font-weight: 600;
             text-align: center;
+            font-size: 12px;
         }
         
         tr:nth-child(even) {
@@ -243,18 +257,20 @@
             border: 1px solid var(--stroke-color);
             margin-bottom: 16px;
             color: var(--text-color);
+            font-size: 12px;
+            overflow-x: auto;
         }
         
         .game-summary {
             background-color: var(--background-color);
-            padding: 24px;
+            padding: 24px 16px;
             margin: 24px 0;
             border: 1px solid var(--stroke-color);
             text-align: center;
         }
         
         .winner-result {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: var(--text-color);
             margin: 16px 0;
@@ -268,14 +284,14 @@
         .score-item {
             padding: 8px;
             margin: 8px 0;
-            font-size: 16px;
+            font-size: 14px;
         }
         
         .copy-button {
             background-color: var(--button-color);
             color: var(--background-color);
             border: none;
-            width: 300px;
+            width: 100%;
             height: 48px;
             cursor: pointer;
             font-weight: 400;
@@ -284,7 +300,7 @@
             border-radius: 0;
             font-size: 16px;
             font-family: 'Poppins', Helvetica, Arial, sans-serif;
-            margin: 8px;
+            margin: 8px 0;
         }
         
         .copy-button:hover {
@@ -295,15 +311,16 @@
         
         .result-content {
             background-color: var(--background-color);
-            padding: 24px;
+            padding: 24px 16px;
             margin: 24px 0;
             border: 1px solid var(--stroke-color);
             text-align: left;
             color: var(--text-color);
             white-space: pre-wrap;
             font-family: 'Poppins', Helvetica, Arial, sans-serif;
-            font-size: 14px;
+            font-size: 12px;
             line-height: 1.5;
+            overflow-x: auto;
         }
         
         .highlight {
@@ -324,13 +341,69 @@
             font-family: 'Poppins', Helvetica, Arial, sans-serif;
             white-space: pre-wrap;
             word-wrap: break-word;
-            font-size: 14px;
+            font-size: 12px;
             line-height: 1.5;
         }
         
         .add-50-container {
             text-align: center;
             margin: 16px 0;
+        }
+        
+        /* Мобильные оптимизации */
+        @media (max-width: 480px) {
+            .section {
+                padding: 16px 12px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            h2 {
+                font-size: 18px;
+            }
+            
+            .points-grid {
+                gap: 6px;
+            }
+            
+            .points-grid input {
+                height: 45px;
+                font-size: 14px;
+                padding: 8px 4px;
+            }
+            
+            th, td {
+                padding: 8px 4px;
+                font-size: 11px;
+            }
+            
+            .current-player {
+                font-size: 16px;
+                padding: 12px;
+            }
+        }
+        
+        /* Для очень маленьких экранов */
+        @media (max-width: 360px) {
+            body {
+                padding: 12px;
+            }
+            
+            .section {
+                padding: 12px 8px;
+            }
+            
+            .points-grid input {
+                height: 40px;
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 6px 3px;
+                font-size: 10px;
+            }
         }
     </style>
 </head>
@@ -344,7 +417,7 @@
 
     <div class="section hidden" id="players-section">
         <h2>Начало игры</h2>
-        <p style="text-align: center;">Введите имена игроков и выберите, кто ходит первым</p>
+        <p>Введите имена игроков и выберите, кто ходит первым</p>
         
         <div class="players-container" id="players-container">
             <div class="player-input">
@@ -357,9 +430,7 @@
             </div>
         </div>
         
-        <div style="text-align: center; margin-top: 24px;">
-            <button class="primary" onclick="startGameplay()">Начать игру</button>
-        </div>
+        <button class="primary" onclick="startGameplay()">Начать игру</button>
     </div>
 
     <div class="section hidden" id="gameplay-section">
@@ -376,8 +447,10 @@
         
         <div class="button-group">
             <button class="primary" onclick="endTurn()">Конец хода</button>
-            <button onclick="skipTurn()">Пропустить</button>
-            <button onclick="endGame()">Закончить игру</button>
+            <div class="button-group-row">
+                <button onclick="skipTurn()">Пропустить</button>
+                <button onclick="endGame()">Закончить игру</button>
+            </div>
         </div>
         
         <div class="move-history">
@@ -387,7 +460,7 @@
                     <tr>
                         <th>Ход</th>
                         <th>Игрок</th>
-                        <th>Введенные очки</th>
+                        <th>Очки</th>
                         <th>Сумма</th>
                     </tr>
                 </thead>
@@ -405,10 +478,8 @@
             <div id="result-text"></div>
         </div>
         
-        <div style="text-align: center; margin: 24px 0;">
-            <button class="copy-button" onclick="copyGameResult()">Копировать результат</button>
-            <button onclick="newGame()">Новая игру</button>
-        </div>
+        <button class="copy-button" onclick="copyGameResult()">Копировать результат</button>
+        <button onclick="newGame()">Новая игра</button>
         
         <h3>Подробная таблица результатов</h3>
         <table>
@@ -416,7 +487,7 @@
                 <tr>
                     <th>Ход</th>
                     <th>Игрок</th>
-                    <th>Введенные очки</th>
+                    <th>Очки</th>
                     <th>Сумма</th>
                 </tr>
             </thead>
@@ -688,6 +759,8 @@
                 try {
                     const textArea = document.createElement('textarea');
                     textArea.value = resultText;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-9999px';
                     document.body.appendChild(textArea);
                     textArea.select();
                     document.execCommand('copy');
@@ -733,3 +806,4 @@
     </script>
 </body>
 </html>
+
